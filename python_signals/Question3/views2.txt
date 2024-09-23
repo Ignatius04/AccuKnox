@@ -1,0 +1,32 @@
+# views.py
+from django.http import HttpResponse
+from django.db import transaction
+from django.contrib.auth.models import User
+from myapp.models import Profile
+
+def create_user_view(request):
+    try:
+        with transaction.atomic():
+            user = User.objects.create(username="john_doe")
+            print("User created.")
+            # Intentionally raise an error to cause a rollback
+            raise Exception("Something went wrong! Rolling back the transaction.")
+    except Exception as e:
+        print(f"Exception caught: {e}")
+    
+    # Check if the user and profile exist
+    user_exists = User.objects.filter(username="john_doe").exists()
+    profile_exists = Profile.objects.filter(user__username="john_doe").exists()
+    return HttpResponse(f"User exists: {user_exists}, Profile exists: {profile_exists}")
+
+
+Expected Output:
+# if we access the view, this will be printed in the console.
+
+User created.
+Signal received, creating profile...
+Profile created.
+Exception caught: Something went wrong! Rolling back the transaction.
+
+#The HTTP response will return:
+User exists: False, Profile exists: False

@@ -1,0 +1,19 @@
+# views.py
+from django.http import HttpResponse
+from django.contrib.auth.models import User
+import threading
+
+def create_user_view(request):
+    current_thread = threading.current_thread()
+    print(f"View is running in thread: {current_thread.name}")
+    
+    # Create a new user instance
+    user = User.objects.create(username="john_doe")
+    return HttpResponse("User created.")
+
+
+
+Expected Output:
+
+View is running in thread: MainThread
+Signal is running in thread: MainThread

@@ -1,0 +1,17 @@
+Django processes the signal synchronously by default. 
+The view will not return a response until the signal handler completes its task.
+
+
+# signals.py
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.contrib.auth.models import User
+import time
+
+# Signal receiver to execute when a User object is saved
+@receiver(post_save, sender=User)
+def user_saved_signal(sender, instance, **kwargs):
+    print(f"Signal received for user: {instance.username}")
+    # Simulate a long-running task
+    time.sleep(5)
+    print("Signal handler finished processing.")

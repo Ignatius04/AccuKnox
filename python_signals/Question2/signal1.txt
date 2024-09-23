@@ -1,0 +1,15 @@
+ Django signals run in the same thread as the caller by default. 
+ This means that the code that triggers the signal and the signal handler both execute within the same thread.
+
+
+# signals.py
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.contrib.auth.models import User
+import threading
+
+# Signal receiver to execute when a User object is saved
+@receiver(post_save, sender=User)
+def user_saved_signal(sender, instance, **kwargs):
+    current_thread = threading.current_thread()
+    print(f"Signal is running in thread: {current_thread.name}")

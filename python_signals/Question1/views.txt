@@ -1,0 +1,16 @@
+# views.py
+from django.contrib.auth.models import User
+
+def create_user_view(request):
+    # Create a new user instance
+    user = User.objects.create(username="john_doe")
+    print("User created.")
+    return HttpResponse("User created.")
+
+
+Expected Output:
+
+>>User created.
+>>Signal received for user: john_doe
+# 5-second delay due to time.sleep in the signal handler
+>>Signal handler finished processing.

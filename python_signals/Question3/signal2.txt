@@ -1,0 +1,15 @@
+By default, Django signals run in the same database transaction as the caller when the signal is connected to database actions like post_save, pre_save, etc. 
+This means that if the caller's transaction is rolled back, the signal's actions will also be rolled back, and vice versa.
+
+# signals.py
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.contrib.auth.models import User
+from myapp.models import Profile
+
+@receiver(post_save, sender=User)
+def create_profile(sender, instance, **kwargs):
+    # Create a related profile when a user is saved
+    print("Signal received, creating profile...")
+    Profile.objects.create(user=instance, bio="Auto-created profile")
+    print("Profile created.")
